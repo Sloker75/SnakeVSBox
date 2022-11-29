@@ -9,6 +9,7 @@ public class Snake : MonoBehaviour
     [SerializeField] private SnakeHead _snakeHead;
     [SerializeField] private float _speed;
     [SerializeField] private float _tailSpringiness;
+    [SerializeField] private int _tailSize;
 
     private SnakeInput _snakeInput;
     private TailSpawner _tailSpawner;
@@ -20,13 +21,21 @@ public class Snake : MonoBehaviour
     {
         _tailSpawner = GetComponent<TailSpawner>();
         _snakeInput = GetComponent<SnakeInput>();
-        _tailSegments = _tailSpawner.Generate();
+        _tailSegments = _tailSpawner.Generate(_tailSize);
 
         SizeUpdated?.Invoke(_tailSegments.Count);
     }
 
-    private void OnEnable() => _snakeHead.BlockCollided += OnBlockCollided;
-    private void OnDisable() => _snakeHead.BlockCollided -= OnBlockCollided;
+    private void OnEnable()
+    {
+        _snakeHead.BlockCollided += OnBlockCollided;
+        _snakeHead.BonusPicUp += OnBonusPicUp;
+    }
+    private void OnDisable()
+    {
+        _snakeHead.BlockCollided -= OnBlockCollided;
+        _snakeHead.BonusPicUp -= OnBonusPicUp;
+    }
 
     private void FixedUpdate()
     {
@@ -55,6 +64,13 @@ public class Snake : MonoBehaviour
         var deletedSegment = _tailSegments[_tailSegments.Count - 1];
         _tailSegments.Remove(deletedSegment);
         Destroy(deletedSegment.gameObject);
+
+        SizeUpdated?.Invoke(_tailSegments.Count);
+    }
+
+    private void OnBonusPicUp(int bonusValue)
+    {
+        _tailSegments.AddRange(_tailSpawner.Generate(bonusValue));
 
         SizeUpdated?.Invoke(_tailSegments.Count);
     }
