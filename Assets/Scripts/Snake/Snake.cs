@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Snake : MonoBehaviour
 {
@@ -12,12 +14,19 @@ public class Snake : MonoBehaviour
     private TailSpawner _tailSpawner;
     private List<Segment> _tailSegments;
 
+    public event UnityAction<int> SizeUpdated;
+
     private void Start()
     {
         _tailSpawner = GetComponent<TailSpawner>();
         _snakeInput = GetComponent<SnakeInput>();
         _tailSegments = _tailSpawner.Generate();
+
+        SizeUpdated?.Invoke(_tailSegments.Count);
     }
+
+    private void OnEnable() => _snakeHead.BlockCollided += OnBlockCollided;
+    private void OnDisable() => _snakeHead.BlockCollided -= OnBlockCollided;
 
     private void FixedUpdate()
     {
@@ -39,5 +48,14 @@ public class Snake : MonoBehaviour
             previuosPosition = tempPosition;
         }
         _snakeHead.Move(nextPosition);
+    }
+
+    private void OnBlockCollided()
+    {
+        var deletedSegment = _tailSegments[_tailSegments.Count - 1];
+        _tailSegments.Remove(deletedSegment);
+        Destroy(deletedSegment.gameObject);
+
+        SizeUpdated?.Invoke(_tailSegments.Count);
     }
 }
