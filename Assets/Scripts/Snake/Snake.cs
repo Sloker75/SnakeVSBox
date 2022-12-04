@@ -15,6 +15,7 @@ public class Snake : MonoBehaviour
     private TailSpawner _tailSpawner;
     private List<Segment> _tailSegments;
 
+    public event UnityAction GameOver;
     public event UnityAction<int> SizeUpdated;
 
     private void Start()
@@ -64,6 +65,8 @@ public class Snake : MonoBehaviour
         var deletedSegment = _tailSegments[_tailSegments.Count - 1];
         _tailSegments.Remove(deletedSegment);
         Destroy(deletedSegment.gameObject);
+        if (_tailSegments.Count == 0)
+            GameOver?.Invoke();
 
         SizeUpdated?.Invoke(_tailSegments.Count);
     }
