@@ -18,6 +18,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Wall _wallTemplate;
     [SerializeField] private int _wallSpawnChance;
 
+    [Header("Finish")]
+    [SerializeField] private Finish _finishTemplate;
+
     private BlockSpawnPoint[] _blockSpawnPoints;
     private WallSpawnPoint[] _wallSpawnPoints;
 
@@ -36,6 +39,8 @@ public class Spawner : MonoBehaviour
             GenerateRandomLine(_wallSpawnPoints, _wallTemplate.gameObject, _wallSpawnChance);
             GenerateRandomLine(_blockSpawnPoints, _blockTemplate.gameObject, _blockSpawnChance);
         }
+        MoveSpawner(_distanceBetweenFullLine);
+        GenerateElement(transform.position, _finishTemplate.gameObject);
     }
 
     private void GenerateRandomLine(SpawnerPoint[] spawnPoints, GameObject spawnObject, int spawnChance)
@@ -60,5 +65,6 @@ public class Spawner : MonoBehaviour
     {
         transform.position = new Vector3(transform.position.x, transform.position.y + distanceY, transform.position.z);
     }
+
 
 }

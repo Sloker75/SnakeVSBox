@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 public class Block : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Vector2Int _destroyPriceRange;
 
     private int _destroyPrice;
@@ -14,6 +15,7 @@ public class Block : MonoBehaviour
 
     private void Start()
     {
+        _spriteRenderer.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
         _destroyPrice = Random.Range(_destroyPriceRange.x, _destroyPriceRange.y);
         FillingProgress?.Invoke(leftToFill);
     }
