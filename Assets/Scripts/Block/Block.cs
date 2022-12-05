@@ -9,6 +9,8 @@ public class Block : MonoBehaviour
     private int _destroyPrice;
     private int _filling;
 
+    public int Filling => _filling;
+
     private int leftToFill => _destroyPrice - _filling;
 
     public event UnityAction<int> FillingProgress;
